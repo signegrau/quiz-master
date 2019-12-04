@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import { Button } from 'react-bootstrap';
 import { QuizzesPage } from './QuizzesPage';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { CreateQuizPage } from './CreateQuizPage';
 
 export class App extends Component {
     render() {
@@ -9,7 +10,7 @@ export class App extends Component {
             <Router>
                 <Switch>
                     <Route path="/create">
-                        <div>Here you can create a quiz</div>
+                        <CreateQuizPage />
                     </Route>
                     <Route path="/">
                         <QuizzesPage />

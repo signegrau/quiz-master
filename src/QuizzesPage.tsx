@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import { Button } from 'react-bootstrap';
-import { QuizList } from './QuizList';
+import { QuizList } from './Components/QuizList';
 import { LinkContainer } from 'react-router-bootstrap';
 
 export interface QuizzesPageProps { }
