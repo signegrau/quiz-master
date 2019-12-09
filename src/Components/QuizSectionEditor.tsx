@@ -1,19 +1,39 @@
 import { Component, h } from 'preact';
-import { LinkContainer } from 'react-router-bootstrap';
-import { Button, Card, Accordion, InputGroup, FormControl } from 'react-bootstrap';
-import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { QuizSection } from '../Quiz';
-import { FormEvent } from 'react';
+import { Button, Card, InputGroup, FormControl } from 'react-bootstrap';
+import { QuizSection, QuizQuestion } from '../Quiz';
+import { QuestionEditor } from './QuestionEditor';
 
 export interface Props {
     quizSection: QuizSection;
     onSectionChanged?: (section: QuizSection) => void;
 }
 
-export interface State extends Partial<QuizSection> { }
+export interface State extends Partial<QuizSection> {
+    questions: ReadonlyArray<QuizQuestion>
+}
 
 export class QuizSectionEditor extends Component<Props, State> {
+    state = {
+        questions: []
+    } as State;
+
+    componentDidMount() {
+        this.setState({
+            questions: this.props.quizSection.questions || []
+        })
+    }
+
+    componentWillReceiveProps(nextProps: Readonly<Props>): void {
+        console.log(this.state.questions, nextProps.quizSection.questions);
+        this.setState({
+            questions: [
+                ...this.state.questions,
+                ...nextProps.quizSection.questions.filter(
+                    (q) => !this.state.questions.includes(q))
+            ]
+        })
+    }
+
     onTitleChanged(event: any): void {
         this.setState({
             title: event.target.value
@@ -23,15 +43,15 @@ export class QuizSectionEditor extends Component<Props, State> {
     valueChanged(): void {
         if (this.props.onSectionChanged) {
             this.props.onSectionChanged({
-                id: this.props.quizSection.id,
-                title: this.state.title || this.props.quizSection.title,
-                questions: this.state.questions || this.props.quizSection.questions
+                ...this.props.quizSection, ...this.state
             });
         }
     }
 
     addQuestion(): void {
-        console.log("adding a question");
+        this.setState({
+            questions: [...this.state.questions, { id: 0, answer: [] } as QuizQuestion]
+        }, () => console.log(this.state));
     }
 
     render() {
@@ -46,11 +66,15 @@ export class QuizSectionEditor extends Component<Props, State> {
                                 aria-label="Section title"
                                 onInput={(e: any) => this.onTitleChanged(e)}
                                 onBlur={() => this.valueChanged()}
+                                size="lg"
                             />
                         </InputGroup>
                     </div>
                 </Card.Header>
                 <Card.Body>
+                    {this.state.questions.map(q => <div class="mb-3">
+                        <QuestionEditor question={q} />
+                    </div>)}
                     <Button onClick={() => this.addQuestion()} block variant="primary">Add question</Button>
                 </Card.Body>
             </Card>

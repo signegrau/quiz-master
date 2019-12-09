@@ -1,6 +1,6 @@
 import { Component, h } from 'preact';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Button, Card, Accordion, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, Card, Accordion, InputGroup, FormControl, ListGroup } from 'react-bootstrap';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { QuizSectionEditor } from './Components/QuizSectionEditor';
@@ -15,7 +15,14 @@ export class CreateQuizPage extends Component<{}, State> {
         quiz: {
             id: 0,
             title: 'New quiz',
-            sections: []
+            sections: [{
+                id: 0,
+                title: 'First section',
+                questions: [{
+                    id: 0,
+                    answer: []
+                }]
+            }]
         }
     } as State;
 
@@ -23,10 +30,10 @@ export class CreateQuizPage extends Component<{}, State> {
         this.setState({
             quiz: {
                 ...this.state.quiz,
-                sections: [...this.state.quiz.sections, { 
-                    id: this.state.quiz.sections.length, 
-                    title: "New section", 
-                    questions: [] 
+                sections: [...this.state.quiz.sections, {
+                    id: this.state.quiz.sections.length,
+                    title: "New section",
+                    questions: []
                 }]
             }
         });
@@ -53,19 +60,36 @@ export class CreateQuizPage extends Component<{}, State> {
         return (
             <div class="container">
                 <h1>Create a quiz</h1>
-                <div>
-                    {this.state.quiz.sections.map((section) =>
-                        <QuizSectionEditor 
-                            quizSection={section} 
-                            onSectionChanged={(newSection) => this.sectionChanged(newSection)}
-                        />)}
-                </div>
-                <Button block onClick={() => this.addSection()}>Add section</Button>
-                <div class="d-flex justify-content-between">
-                    <LinkContainer to="/">
-                        <Button variant="danger">Go back</Button>
-                    </LinkContainer>
-                    <Button variant="success" onClick={() => console.log(this.state.quiz, this.state.quiz.sections)}>Save</Button>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="sidebar">
+                            <ListGroup>
+                                {this.state.quiz.sections.map((s, i) =>
+                                    <ListGroup.Item href={`#section${i}`} key={i} as="a">
+                                        {s.title}
+                                    </ListGroup.Item>
+                                )}
+                            </ListGroup>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div>
+                            {this.state.quiz.sections.map((section, i) =>
+                                <div id={`section${i}`} class="mb-3">
+                                    <QuizSectionEditor
+                                        quizSection={section}
+                                        onSectionChanged={(newSection) => this.sectionChanged(newSection)}
+                                    />
+                                </div>)}
+                        </div>
+                        <Button block onClick={() => this.addSection()}>Add section</Button>
+                        <div class="d-flex justify-content-between">
+                            <LinkContainer to="/">
+                                <Button variant="danger">Go back</Button>
+                            </LinkContainer>
+                            <Button variant="success" onClick={() => console.log(this.state.quiz, this.state.quiz.sections)}>Save</Button>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

@@ -1,6 +1,6 @@
 export interface QuizQuestion {
     id: number;
-    title: string;
+    title?: string;
     text?: string;
     image?: string;
     answer: ReadonlyArray<string>;

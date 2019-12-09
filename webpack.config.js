@@ -21,7 +21,17 @@ module.exports = {
         }, { 
             test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
             loader: "file-loader" 
-        }],
+        }, {
+            test: /\.s[ac]ss$/i,
+            use: [
+              // Creates `style` nodes from JS strings
+              'style-loader',
+              // Translates CSS into CommonJS
+              'css-loader',
+              // Compiles Sass to CSS
+              'sass-loader',
+            ],
+          }],
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx"],
